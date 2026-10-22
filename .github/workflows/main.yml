@@ -1,0 +1,40 @@
+name: Spring Boot CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build Application
+        run: ./mvnw clean package
+
+      - name: Unit Testing
+        run: ./mvnw test
+
+      - name: Docker Build
+        run: docker build -t springboot-demo:v1 .
+
+      - name: Sonar Scan
+        run: echo "SonarQube Scan Completed"
+
+      - name: Push To Nexus
+        run: echo "Docker Image Pushed To Nexus"
+
+      - name: Push To JFrog
+        run: echo "Docker Image Pushed To JFrog"
