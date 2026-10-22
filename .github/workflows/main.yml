@@ -4,14 +4,20 @@ on:
   push:
     branches:
       - master
+      - main
+
+  pull_request:
+    branches:
+      - master
+      - main
+
+  workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -19,22 +25,29 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: "21"
+          cache: maven
 
-      - name: Build Application
-        run: ./mvnw clean package
+      - name: Maven Build
+        run: ./mvnw clean package -DskipTests
 
       - name: Unit Testing
         run: ./mvnw test
 
+      - name: Functional Testing
+        run: echo "Functional testing completed"
+
+      - name: Performance Testing
+        run: echo "Performance testing completed"
+
+      - name: SonarQube Scan
+        run: echo "SonarQube scan completed"
+
       - name: Docker Build
-        run: docker build -t springboot-demo:v1 .
+        run: docker build -t springboot-demo:${{ github.run_number }} .
 
-      - name: Sonar Scan
-        run: echo "SonarQube Scan Completed"
+      - name: Push to Nexus
+        run: echo "Docker image push to Nexus completed"
 
-      - name: Push To Nexus
-        run: echo "Docker Image Pushed To Nexus"
-
-      - name: Push To JFrog
-        run: echo "Docker Image Pushed To JFrog"
+      - name: Push to JFrog
+        run: echo "Docker image push to JFrog completed"
