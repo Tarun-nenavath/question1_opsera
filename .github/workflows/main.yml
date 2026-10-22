@@ -3,13 +3,13 @@ name: Spring Boot CI
 on:
   push:
     branches:
-      - master
       - main
+      - master
 
   pull_request:
     branches:
-      - master
       - main
+      - master
 
   workflow_dispatch:
 
@@ -28,11 +28,17 @@ jobs:
           java-version: "21"
           cache: maven
 
-      - name: Maven Build
-        run: ./mvnw clean package -DskipTests
+      - name: Make Maven Wrapper Executable
+        run: chmod +x mvnw
+
+      - name: Initial Maven Build
+        run: ./mvnw clean compile
 
       - name: Unit Testing
         run: ./mvnw test
+
+      - name: Package Application
+        run: ./mvnw package -DskipTests
 
       - name: Functional Testing
         run: echo "Functional testing completed"
