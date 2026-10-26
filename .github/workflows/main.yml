@@ -4,20 +4,14 @@ on:
   push:
     branches:
       - main
-      - master
-
-  pull_request:
-    branches:
-      - main
-      - master
-
-  workflow_dispatch:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -25,40 +19,37 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
-          cache: maven
+          java-version: '21'
 
-      - name: Make Maven Wrapper Executable
-        run: chmod +x mvnw
-
-      - name: Initial Maven Build
-        run: ./mvnw clean compile
+      - name: Initial Build
+        run: mvn clean compile
 
       - name: Unit Testing
-        run: ./mvnw test
-
-      - name: Package Application
-        run: ./mvnw package -DskipTests
+        run: mvn test
 
       - name: Functional Testing
-        run: echo "Functional testing completed"
+        run: echo "Functional Testing Completed"
 
       - name: Performance Testing
-        run: echo "Performance testing completed"
+        run: echo "Performance Testing Completed"
 
       - name: SonarQube Scan
-        run: echo "SonarQube scan completed"
+        run: echo "SonarQube Scan Completed"
+
+      - name: Package Application
+        run: mvn package
 
       - name: Docker Build
         run: docker build -t springboot-demo:${{ github.run_number }} .
 
-      - name: Push to Nexus
-        run: echo "Docker image push to Nexus completed"
+      - name: Push To Nexus
+        run: echo "Image springboot-demo:${{ github.run_number }} Pushed To Nexus"
+
+      - name: Push To JFrog
+        run: echo "Image springboot-demo:${{ github.run_number }} Pushed To JFrog"
 
       - name: Deployment
-        run: |
-          echo "Updating Kubernetes Deployment"
-      
-      - name: ArgoCD Sync
-        run: |
-          echo "ArgoCD Deployment Triggered"
+        run: echo "Deploying springboot-demo:${{ github.run_number }}"
+
+      - name: ArgoCD Deploy
+        run: echo "ArgoCD Deployment Triggered"
