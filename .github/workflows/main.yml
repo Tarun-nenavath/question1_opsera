@@ -55,5 +55,10 @@ jobs:
       - name: Push to Nexus
         run: echo "Docker image push to Nexus completed"
 
-      - name: Push to JFrog
-        run: echo "Docker image push to JFrog completed"
+      - name: Deployment
+        run: |
+          echo "Updating Kubernetes Deployment"
+      
+      - name: ArgoCD Sync
+        run: |
+          echo "ArgoCD Deployment Triggered"
